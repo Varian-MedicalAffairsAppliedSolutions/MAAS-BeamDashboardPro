@@ -1,0 +1,34 @@
+trigger:
+- main
+
+pool:
+  vmImage: windows-latest
+
+
+steps:
+- task: UsePythonVersion@0
+  inputs:
+    versionSpec: '3.10'
+  displayName: 'Useing Python'
+
+- script: |
+    python -m pip install --upgrade pip
+    python -m venv env --copies
+    .\env\Scripts\activate
+    pip install -r requirements.txt
+  displayName: 'Install dependencies'
+
+- task: CopyFiles@2
+  inputs:
+    contents: |
+      env
+      DashboardPro.cs
+      streamlit_runner.py
+      dashboard.py
+    targetFolder: $(Build.ArtifactStagingDirectory)
+  displayName: 'Stage scritps and python environment'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    pathToPublish: $(Build.ArtifactStagingDirectory)
+    artifactName: 'DashboardPro $(Build.BuildNumber)'

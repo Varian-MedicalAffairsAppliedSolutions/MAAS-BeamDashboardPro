@@ -38,12 +38,12 @@ namespace VMS.TPS
             var workingDirectory = Path.GetDirectoryName(pathHere);
 
             var pythonPath = Path.Combine(workingDirectory, PYTHON_ENV, "Scripts", PYTHON_EXE);
-            var runnerPath = Path.Combine(workingDirectory, "dashboard_runner.py");
-            var scrptPath = Path.Combine(workingDirectory, "dashboard.py");
+            var stRunnerPath = Path.Combine(workingDirectory, "streamlit_runner.py");
+            var scriptPath = Path.Combine(workingDirectory, "dashboard.py");
             
             var startInfo = new ProcessStartInfo(pythonPath);
             startInfo.UseShellExecute = false;                        
-            startInfo.Arguments = runnerPath + " " + scrptPath +
+            startInfo.Arguments = stRunnerPath + " " + scriptPath +
                 ArgBuilder("plan-id", context.PlanSetup.Id) +
                 ArgBuilder("course-id", context.PlanSetup.Course.Id) +
                 ArgBuilder("patient-id", context.Patient.Id);
