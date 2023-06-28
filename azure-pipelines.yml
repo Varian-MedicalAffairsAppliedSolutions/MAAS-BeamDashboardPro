@@ -17,6 +17,10 @@ steps:
     python -m venv env --system-site-packages --copies
   displayName: 'Install dependencies'
 
+- script: |
+    python -m venv env --system-site-packages --copies
+  displayName: 'Create python environment'
+
 - task: CopyFiles@2
   inputs:
     contents: |
