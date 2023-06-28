@@ -13,7 +13,7 @@ steps:
 - script: |
     python -m pip install --upgrade pip
     python -m venv env --copies
-    pip install --target="$(workingDirectory)\env\Lib\site-packages" -r requirements.txt
+    pip install --target env\Lib\site-packages -r requirements.txt
   displayName: 'Create python environment'
 
 - task: CopyFiles@2
