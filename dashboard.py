@@ -13,9 +13,9 @@ def parse_args():
                     prog='dashboard',
                     description='PLAID Dashboard to review results of FLASH optimizations',
                     epilog='v0.1.0')
-    parser.add_argument('--plan-id')
-    parser.add_argument('--course-id')
-    parser.add_argument('--patient-id')
+    parser.add_argument('--plan-id', required=True)
+    parser.add_argument('--course-id', required=True)
+    parser.add_argument('--patient-id', required=True)
 
     return parser.parse_args()
 
@@ -25,13 +25,6 @@ plan_id = args.plan_id  #"MODev01"
 course_id = args.course_id  #"Min MU 400"
 patient_id = args.patient_id  #"LUNG_063"
 
-
-# @st.cache_resource
-# def load_pyesapi():
-#     # atexit.register(app.Dispose)
-#     app.Dispose()
-#     app = pyesapi.CustomScriptExecutable.CreateApplication('python_demo2')
-#     return app
 
 @st.cache_data
 def extract_data(patient_id, course_id, plan_id):

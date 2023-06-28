@@ -12,9 +12,12 @@ steps:
 
 - script: |
     python -m pip install --upgrade pip
-    python -m venv env --copies
-    pip install --target env\Lib\site-packages -r requirements.txt
-  displayName: 'Create python environment'
+    pip install -r requirements.txt
+  displayName: 'Install python packages'
+
+- script: |
+    pyinstaller streamlit_runner.spec
+  displayName: 'Build with PyInstaller'
 
 - task: CopyFiles@2
   inputs:
