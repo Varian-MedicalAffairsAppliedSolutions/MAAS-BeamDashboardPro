@@ -4,7 +4,6 @@ trigger:
 pool:
   vmImage: windows-latest
 
-
 steps:
 - task: UsePythonVersion@0
   inputs:
@@ -13,13 +12,9 @@ steps:
 
 - script: |
     python -m pip install --upgrade pip
-    pip install -r requirements.txt
-    python -m venv env --system-site-packages --copies
-  displayName: 'Install dependencies'
-
-# - script: |
-#     python -m venv env --system-site-packages --copies
-#   displayName: 'Create python environment'
+    python -m venv env --copies
+    pip install --target="$(workingDirectory)\env\Lib\site-packages" -r requirements.txt
+  displayName: 'Create python environment'
 
 - task: CopyFiles@2
   inputs:
@@ -32,7 +27,7 @@ steps:
 
 - task: CopyFiles@2
   inputs:
-    contents: c:\hostedtoolcache\windows\python\3.10.11\x64\**
+    contents: env\**
     targetFolder: $(Build.ArtifactStagingDirectory)\env
   displayName: 'Stage python environment'
 
