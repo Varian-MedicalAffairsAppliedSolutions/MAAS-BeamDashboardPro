@@ -27,8 +27,10 @@ steps:
 
 - task: CopyFiles@2
   inputs:
-    contents: env\**
-    targetFolder: $(Build.ArtifactStagingDirectory)\env
+    contents: |
+      env\**
+      !env\**\__pycache__\**
+    targetFolder: $(Build.ArtifactStagingDirectory)
   displayName: 'Stage python environment'
 
 - task: PublishBuildArtifacts@1
