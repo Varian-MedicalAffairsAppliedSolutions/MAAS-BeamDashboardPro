@@ -17,9 +17,9 @@ steps:
     python -m venv env --system-site-packages --copies
   displayName: 'Install dependencies'
 
-- script: |
-    python -m venv env --system-site-packages --copies
-  displayName: 'Create python environment'
+# - script: |
+#     python -m venv env --system-site-packages --copies
+#   displayName: 'Create python environment'
 
 - task: CopyFiles@2
   inputs:
@@ -32,7 +32,7 @@ steps:
 
 - task: CopyFiles@2
   inputs:
-    contents: env\**
+    contents: c:\hostedtoolcache\windows\python\3.10.11\x64\**
     targetFolder: $(Build.ArtifactStagingDirectory)\env
   displayName: 'Stage python environment'
 
