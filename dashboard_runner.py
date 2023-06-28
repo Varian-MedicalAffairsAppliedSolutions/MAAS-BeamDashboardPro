@@ -1,7 +1,4 @@
-import streamlit
 import streamlit.web.cli as stcli
-import streamlit.runtime.scriptrunner.magic_funcs  # otherwise it's missed by PyInstaller
-import pyarrow.vendored.version  # same, for PyInstaller
 import sys
 
 if __name__ == "__main__":

@@ -70,10 +70,6 @@ def extract_data(patient_id, course_id, plan_id):
     df.set_index('Spot Idx')
     return df
 
-# patient_id = st.text_input('Patient ID', 'LUNG_063')
-# course_id = st.text_input('Course ID', 'Min MU 400')
-# plan_id = st.text_input('Plan ID', 'MODeV01')
-
 st.title(f'Plan ID: {plan_id}\nPatient ID: {patient_id} | Course ID: {course_id}')
 
 df = extract_data(patient_id, course_id, plan_id)

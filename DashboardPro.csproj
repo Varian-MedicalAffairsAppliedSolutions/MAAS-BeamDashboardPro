@@ -9,9 +9,6 @@
     <!-- AssemblyInfo.cs is generated automatically by default.
          Disable auto-generation or remove the file. -->
       <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-
-    <DefaultItemExcludes>saved_for_later\*</DefaultItemExcludes>
-
   </PropertyGroup>
 
   <ItemGroup>
