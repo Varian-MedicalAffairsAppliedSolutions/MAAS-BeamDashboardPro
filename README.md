@@ -11,12 +11,9 @@ This project is a proof of concept, bringing modern interactive plotting tools t
     * `pip install -r requirements.txt`
 1. Launch `DashboardPro.cs` from Eclipse Scripts window.
 
-## Making the Dashboard Portable
-1. Add the following to a .zip archive (maintain relative locations):
-    * `env` folder
-    * `DashboardPro.cs`
-    * `dashboard.py`
-    * `dashboard_runner.py`
+## Building for Release
+1. Use pyinstaller spec file
+    * `pyinstaller .\streamlit_runner.spec --noconfirm`
 
 ## Known Issues
 * Streamlit is multi-treaded, and ESAPI only supports access from a single thread. Until a workaround is found, this means any access to PyESAPI should only happen once in an isolated function decorated with `@streamlit.cache_data`

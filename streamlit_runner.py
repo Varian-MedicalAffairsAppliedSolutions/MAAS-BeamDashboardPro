@@ -1,11 +1,14 @@
 import streamlit.web.cli as stcli
 import sys
 
+# the following are needed for PyInstaller:
+import streamlit.runtime.scriptrunner.magic_funcs
+
 if __name__ == "__main__":
 
     if len(sys.argv) == 1:
         print('ERROR: please provide path to streamlit script')
-        exit(1)
+        sys.exit(1)
 
     script_path = sys.argv[1]  # first argument should be the path to the streamlit script
     script_args = sys.argv[2:]  # additional arguments are passed along to the streamlit script
@@ -17,5 +20,5 @@ if __name__ == "__main__":
         script_path,
         "--global.developmentMode=false",
         "--"
-    ] + sys.argv[2:]
+    ] + script_args
     sys.exit(stcli.main())

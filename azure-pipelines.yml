@@ -23,7 +23,6 @@ steps:
   inputs:
     contents: |
       DashboardPro.cs
-      streamlit_runner.py
       dashboard.py
     targetFolder: $(Build.ArtifactStagingDirectory)
   displayName: 'Stage scritps'
@@ -31,10 +30,9 @@ steps:
 - task: CopyFiles@2
   inputs:
     contents: |
-      env\**
-      !env\**\__pycache__\**
+      dist\**
     targetFolder: $(Build.ArtifactStagingDirectory)
-  displayName: 'Stage python environment'
+  displayName: 'Stage binaries'
 
 - task: PublishBuildArtifacts@1
   inputs:
