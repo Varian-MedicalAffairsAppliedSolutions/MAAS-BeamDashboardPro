@@ -28,7 +28,7 @@ namespace VMS.TPS
     public class DashboardPro
     {
         // for use in development environment
-        const string DEV_PYTHON_ENV = "env";
+        const string DEV_PYTHON_ENV = "venv";
         const string DEV_PYTHON_EXE = "python.exe";
 
         public void Execute(ScriptContext context)
@@ -67,7 +67,8 @@ namespace VMS.TPS
                 ArgBuilder("course-id", context.PlanSetup.Course.Id) +
                 ArgBuilder("patient-id", context.Patient.Id);
 
-            MessageBox.Show(exePath + " " + startInfo.Arguments,"Arguments (press ctrl+c to copy to clipboard)");
+            // uncomment below to help with debugging
+            //MessageBox.Show(exePath + " " + startInfo.Arguments,"Arguments (press ctrl+c to copy to clipboard)");
             var py = Process.Start(startInfo);
         }
         

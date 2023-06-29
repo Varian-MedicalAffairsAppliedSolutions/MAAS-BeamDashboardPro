@@ -4,8 +4,8 @@ import pandas as pd
 import plotly.figure_factory as ff
 import plotly.express as px
 import plotly.graph_objects as go
-import pyesapi
 import argparse
+
 
 @st.cache_data
 def parse_args():
@@ -28,13 +28,19 @@ patient_id = args.patient_id  #"LUNG_063"
 
 @st.cache_data
 def extract_data(patient_id, course_id, plan_id):
-    _app = pyesapi.CustomScriptExecutable.CreateApplication('python_demo2')
+    print("Launching PyESAPI...")
+    import pyesapi
+    
+    print("Creating ESAPI app instance...")
+    _app = pyesapi.CustomScriptExecutable.CreateApplication('dashboard_pro')
+    
     try:
         patient = _app.OpenPatientById(patient_id)
         plan = patient.CoursesLot(course_id).IonPlanSetupsLot(plan_id)
 
         df = None
         spot_idx = 0
+        print("Extracting data...")
         for beam in plan.IonBeams:
             beamMetersetValue = beam.Meterset.Value;
             totMetersetWeight = [cpp for cpp in beam.IonControlPoints][-1].MetersetWeight;
@@ -56,9 +62,10 @@ def extract_data(patient_id, course_id, plan_id):
     except Exception as e:
         raise e
     finally:
-        print('{{ app cleanup }}')
+        print('cleaning up...')
         _app.ClosePatient()
         _app.Dispose()
+        print('Done!')
 
     df.set_index('Spot Idx')
     return df

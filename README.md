@@ -4,10 +4,11 @@ This project is a proof of concept, bringing modern interactive plotting tools t
 ## Quickstart
 1. Install python (see `azure-pipelines.yml` for version number)
 1. Create a local, self contained, python environment:
-    * `python -m venv env --copies`
+    * `python -m venv venv`
 1. Activate the local environment:
     * `.\env\Scripts\activate`
 1. Install the required packages:
+    * `python -m pip install --upgrade pip`
     * `pip install -r requirements.txt`
 1. Launch `DashboardPro.cs` from Eclipse Scripts window.
 
