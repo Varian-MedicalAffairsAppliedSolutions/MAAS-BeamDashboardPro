@@ -32,7 +32,7 @@ steps:
     contents: |
       dist\**
     targetFolder: $(Build.ArtifactStagingDirectory)
-  displayName: 'Stage binaries'
+  displayName: 'Stage build'
 
 - task: PublishBuildArtifacts@1
   inputs:
