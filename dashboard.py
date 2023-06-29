@@ -62,7 +62,7 @@ def extract_data(patient_id, course_id, plan_id):
     except Exception as e:
         raise e
     finally:
-        print('cleaning up...')
+        print('Cleaning up...')
         _app.ClosePatient()
         _app.Dispose()
         print('Done!')

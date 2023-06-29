@@ -41,4 +41,4 @@ steps:
 - task: PublishBuildArtifacts@1
   inputs:
     pathToPublish: $(Build.ArtifactStagingDirectory)
-    artifactName: 'DashboardPro $(Build.BuildNumber)'
+    artifactName: 'DashboardPro$(Build.BuildNumber)'

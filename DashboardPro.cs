@@ -51,12 +51,12 @@ namespace VMS.TPS
 
             if(runningInProduction)
             {
-                exePath = Path.Combine(workingDirectory, "streamlit_runner", "streamlit_runner.exe");
+                exePath = "\"" + Path.Combine(workingDirectory, "streamlit_runner", "streamlit_runner.exe") + "\"";
             }
             else
             {
-                exePath = Path.Combine(workingDirectory, DEV_PYTHON_ENV, "Scripts", DEV_PYTHON_EXE);
-                scriptPath = Path.Combine(workingDirectory, "streamlit_runner.py") + " " + scriptPath;
+                exePath = "\"" + Path.Combine(workingDirectory, DEV_PYTHON_ENV, "Scripts", DEV_PYTHON_EXE) + "\"";
+                scriptPath = "\"" + Path.Combine(workingDirectory, "streamlit_runner.py") + "\" \"" + scriptPath + "\"";
             }
 
             
