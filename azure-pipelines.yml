@@ -29,8 +29,7 @@ steps:
 
 - task: CopyFiles@2
   inputs:
-    contents: |
-      dist\**
+    sourceFolder: dist
     targetFolder: $(Build.ArtifactStagingDirectory)
   displayName: 'Stage build'
 

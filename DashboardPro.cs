@@ -27,8 +27,10 @@ namespace VMS.TPS
 
     public class DashboardPro
     {
-        const string PYTHON_ENV = "env";
-        const string PYTHON_EXE = "python.exe";
+        // for use in development environment
+        const string DEV_PYTHON_ENV = "env";
+        const string DEV_PYTHON_EXE = "python.exe";
+
         public void Execute(ScriptContext context)
         {
             this.LaunchDashboard(context);
@@ -36,19 +38,36 @@ namespace VMS.TPS
         public void LaunchDashboard(ScriptContext context, [CallerFilePath] string pathHere = "")
         {
             var workingDirectory = Path.GetDirectoryName(pathHere);
-
-            var pythonPath = Path.Combine(workingDirectory, PYTHON_ENV, "Scripts", PYTHON_EXE);
-            var stRunnerPath = Path.Combine(workingDirectory, "streamlit_runner.py");
-            var scriptPath = Path.Combine(workingDirectory, "dashboard.py");
+            bool runningInProduction = true;
             
-            var startInfo = new ProcessStartInfo(pythonPath);
+            if(File.Exists(Path.Combine(workingDirectory, "streamlit_runner.py")))
+            {
+                // streamlit_runner.py should not be in the production environment
+                runningInProduction = false;
+            }
+
+            var scriptPath = Path.Combine(workingDirectory, "dashboard.py");
+            string exePath;
+
+            if(runningInProduction)
+            {
+                exePath = Path.Combine(workingDirectory, "streamlit_runner", "streamlit_runner.exe");
+            }
+            else
+            {
+                exePath = Path.Combine(workingDirectory, DEV_PYTHON_ENV, "Scripts", DEV_PYTHON_EXE);
+                scriptPath = Path.Combine(workingDirectory, "streamlit_runner.py") + " " + scriptPath;
+            }
+
+            
+            var startInfo = new ProcessStartInfo(exePath);
             startInfo.UseShellExecute = false;                        
-            startInfo.Arguments = stRunnerPath + " " + scriptPath +
+            startInfo.Arguments = scriptPath +
                 ArgBuilder("plan-id", context.PlanSetup.Id) +
                 ArgBuilder("course-id", context.PlanSetup.Course.Id) +
                 ArgBuilder("patient-id", context.Patient.Id);
 
-            //MessageBox.Show(pythonPath + startInfo.Arguments,"Arguments (press ctrl+c to copy to clipboard)");
+            MessageBox.Show(exePath + " " + startInfo.Arguments,"Arguments (press ctrl+c to copy to clipboard)");
             var py = Process.Start(startInfo);
         }
         
