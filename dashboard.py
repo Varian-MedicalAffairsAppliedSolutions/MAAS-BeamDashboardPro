@@ -42,9 +42,9 @@ def extract_data(patient_id, course_id, plan_id):
         spot_idx = 0
         print("Extracting data...")
         for beam in plan.IonBeams:
-            beamMetersetValue = beam.Meterset.Value;
-            totMetersetWeight = [cpp for cpp in beam.IonControlPoints][-1].MetersetWeight;
-            eParams = beam.GetEditableParameters();
+            beamMetersetValue = beam.Meterset.Value
+            totMetersetWeight = [cpp for cpp in beam.IonControlPoints][-1].MetersetWeight
+            eParams = beam.GetEditableParameters()
             for controlPoint in eParams.IonControlPointPairs:
                 for spot in controlPoint.FinalSpotList:
                     spot_dict = {
@@ -73,6 +73,7 @@ def extract_data(patient_id, course_id, plan_id):
 st.title(f'Plan ID: {plan_id}\nPatient ID: {patient_id} | Course ID: {course_id}')
 
 df = extract_data(patient_id, course_id, plan_id)
+st.header('Raw Data')
 st.dataframe(df)
 
 st.header('Spot Stats')
@@ -104,11 +105,10 @@ except np.linalg.LinAlgError:
 
 st.header('Spot Positions and MUs')
 px.defaults.color_continuous_scale = px.colors.sequential.Burg  #Brwnyl
-for grp_name, grp_df in df.groupby('Field ID'):
-    # fig_scatt = go.Figure()
 
-    fig_scatt = px.scatter(grp_df, x='X [mm]', y='Y [mm]', color='MU', hover_data=['MU'])
-    fig_scatt.add_trace(go.Scatter(x=grp_df['X [mm]'], y=grp_df['Y [mm]'], mode='lines', name=grp_name))
+for grp_name, grp_df in df.groupby('Field ID'):
+    fig_scatt = px.scatter(grp_df, x='X [mm]', y='Y [mm]', color='MU', hover_data=['MU'], title=grp_name)
+    fig_scatt.add_trace(go.Scatter(x=grp_df['X [mm]'], y=grp_df['Y [mm]'], mode='lines', name='path'))
     fig_scatt.update_traces(marker=dict(size=20), selector=dict(mode='markers'))
     fig_scatt.update_traces(line_dash='dash', selector=dict(type='scatter'))
     fig_scatt.update_traces(line_color='black', selector=dict(type='scatter'))
