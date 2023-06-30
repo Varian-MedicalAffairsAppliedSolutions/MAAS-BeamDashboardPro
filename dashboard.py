@@ -94,7 +94,8 @@ def extract_data(patient_id, course_id, plan_id):
 
     return df, dfs, dfc
 
-st.title(f'Plan ID: {plan_id}\nPatient ID: {patient_id} | Course ID: {course_id}')
+plan_title = f'Plan ID: {plan_id}\nPatient ID: {patient_id} | Course ID: {course_id}'
+st.title(plan_title)
 
 df, dfs, dfc = extract_data(patient_id, course_id, plan_id)
 st.header('Raw Data')
@@ -190,16 +191,30 @@ for grp_name, grp_df in df.groupby('Field ID'):
 ##
 st.header('DVH')
 ##
-st.write('🚧 Under Construction 🚧')
-dvh_fig = go.Figure(layout=go.Layout(paper_bgcolor='black',plot_bgcolor='black',legend=dict(
-    font=dict(color='white')
-)))
+dvh_fig = go.Figure()
 for structure_id, dvh_data in dfs.groupby('Structure ID'):
     dvh_fig.add_trace(go.Scatter(
         x=dvh_data['Dose %'], y=dvh_data['Volume %'], mode='lines', line_color=dvh_data['Color'][0], name=structure_id
     ))
 dvh_fig.update_layout(
-    xaxis_title='Dose [%]',
-    yaxis_title='Volume [%]'
+    paper_bgcolor='black',
+    plot_bgcolor='black',
+    legend=dict(
+        font=dict(color='white')
+    ),
+    title = dict(
+        text=plan_title,
+        font=dict(color='white')
+    ),
+    yaxis = dict(
+        title='Volume [%]',
+        gridcolor='grey'
+    ),
+    xaxis = dict(
+        title = 'Dose [%]',
+        showgrid=True,
+        gridcolor='grey',
+    )
 )
+
 st.plotly_chart(dvh_fig, use_container_width=True)
