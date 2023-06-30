@@ -38,48 +38,51 @@ def extract_data(patient_id, course_id, plan_id):
         patient = _app.OpenPatientById(patient_id)
         plan = patient.CoursesLot(course_id).IonPlanSetupsLot(plan_id)
 
+        # load spot data
         df = None
-        spot_idx = 0
         print("Extracting data...")
         for beam in plan.IonBeams:
             beamMetersetValue = beam.Meterset.Value
             totMetersetWeight = [cpp for cpp in beam.IonControlPoints][-1].MetersetWeight
             eParams = beam.GetEditableParameters()
             for controlPoint in eParams.IonControlPointPairs:
-                for spot in controlPoint.FinalSpotList:
-                    spot_dict = {
-                        'Spot Idx': [spot_idx],
-                        'Field ID': [beam.Id],
-                        'X [mm]': [spot.X],
-                        'Y [mm]': [spot.Y],
-                        'MU': [spot.Weight * (beamMetersetValue / totMetersetWeight)]
-                    }
-                    if df is not None:
-                        df = pd.concat([df, pd.DataFrame(spot_dict)])
-                    else:
-                        df = pd.DataFrame(spot_dict)
-                    spot_idx += 1
+                df = pd.concat([df, pd.DataFrame({
+                    'Field ID': beam.Id,
+                    'X [mm]': [s.X for s in controlPoint.FinalSpotList],
+                    'Y [mm]': [s.Y for s in controlPoint.FinalSpotList],
+                    'MU': [s.Weight * (beamMetersetValue / totMetersetWeight) for s in controlPoint.FinalSpotList],
+                })])
+
+        # load structure data
         dfs = None
         for structure in plan.StructureSet.Structures:
             dvh = plan.GetDVHCumulativeData(
                 structure,
                 pyesapi.DoseValuePresentation.Relative,
                 pyesapi.VolumePresentation.Relative,
-                .01
+                .1
             )
             if dvh is not None:
-                dose_x = [p.DoseValue.Dose for p in dvh.CurveData]
-                volume_y = [p.Volume for p in dvh.CurveData]
-
-                struc_dict = {
-                    'Structure ID': [structure.Id]*len(dose_x),
-                    'Dose %': dose_x,
-                    'Volume %': volume_y
-                }
-                if dfs is not None:
-                    dfs = pd.concat([dfs, pd.DataFrame(struc_dict)])
-                else:
-                    dfs = pd.DataFrame(struc_dict)
+                dfs = pd.concat([dfs, pd.DataFrame({
+                    'Structure ID': structure.Id,
+                    'Color': "#" + structure.Color.ToString()[3:],  # format is '#AARRGGBB'
+                    'Dose %': [p.DoseValue.Dose for p in dvh.CurveData],
+                    'Volume %': [p.Volume for p in dvh.CurveData],
+                })])
+        
+        # load target contour outline data
+        dfc = None
+        for beam in plan.Beams:
+            beam_target = plan.StructureSet.StructuresLot(beam.TargetStructure.Id)
+            for idx, contour in enumerate(beam.GetStructureOutlines(beam_target,True)):
+                dfc = pd.concat([dfc, pd.DataFrame({
+                    'Beam ID' : beam.Id,
+                    'Structure ID': beam_target.Id,
+                    'Color': "#" + beam_target.Color.ToString()[3:],
+                    'Points X' : [p.X for p in contour],
+                    'Points Y' : [p.Y for p in contour],
+                    'Contour Idx' : idx,
+                })])
 
     except Exception as e:
         raise e
@@ -89,12 +92,11 @@ def extract_data(patient_id, course_id, plan_id):
         _app.Dispose()
         print('Done!')
 
-    df.set_index('Spot Idx')
-    return df, dfs
+    return df, dfs, dfc
 
 st.title(f'Plan ID: {plan_id}\nPatient ID: {patient_id} | Course ID: {course_id}')
 
-df, dfs = extract_data(patient_id, course_id, plan_id)
+df, dfs, dfc = extract_data(patient_id, course_id, plan_id)
 st.header('Raw Data')
 st.download_button(
    "Download (.csv)",
@@ -163,15 +165,25 @@ px.defaults.color_continuous_scale = px.colors.sequential.Burg  #Brwnyl
 
 for grp_name, grp_df in df.groupby('Field ID'):
     # TODO: add PTV contour (beam target)
+
     fig_scatt = px.scatter(grp_df, x='X [mm]', y='Y [mm]', color='MU', hover_data=['MU'], title=grp_name)
-    fig_scatt.add_trace(go.Scatter(x=grp_df['X [mm]'], y=grp_df['Y [mm]'], mode='lines', name='path'))
+    fig_scatt.add_trace(go.Scatter(
+        x=grp_df['X [mm]'], y=grp_df['Y [mm]'],
+        mode='lines', line_dash='dash', line_color= 'black', name='path'
+    ))
     fig_scatt.update_traces(marker=dict(size=20), selector=dict(mode='markers'))
-    fig_scatt.update_traces(line_dash='dash', selector=dict(type='scatter'))
-    fig_scatt.update_traces(line_color='black', selector=dict(type='scatter'))
     fig_scatt.update_yaxes(
         scaleanchor = "x",
         scaleratio = 1,
     )
+
+    for _, dfc_field in dfc[dfc['Beam ID'] == grp_name].groupby('Contour Idx'):
+        structure_id = dfc_field['Structure ID'][0]
+        fig_scatt.add_trace(go.Scatter(
+            x=dfc_field['Points X'], y=dfc_field['Points Y'], mode='lines',
+            name=structure_id
+        ))
+        fig_scatt.update_traces(line_color=dfc_field['Color'][0], selector=dict(name='PTV'))
 
     st.plotly_chart(fig_scatt, use_container_width=True)
 
@@ -179,4 +191,15 @@ for grp_name, grp_df in df.groupby('Field ID'):
 st.header('DVH')
 ##
 st.write('🚧 Under Construction 🚧')
-st.plotly_chart(px.line(dfs,'Dose %','Volume %','Structure ID',labels='Structue ID'), use_container_width=True)
+dvh_fig = go.Figure(layout=go.Layout(paper_bgcolor='black',plot_bgcolor='black',legend=dict(
+    font=dict(color='white')
+)))
+for structure_id, dvh_data in dfs.groupby('Structure ID'):
+    dvh_fig.add_trace(go.Scatter(
+        x=dvh_data['Dose %'], y=dvh_data['Volume %'], mode='lines', line_color=dvh_data['Color'][0], name=structure_id
+    ))
+dvh_fig.update_layout(
+    xaxis_title='Dose [%]',
+    yaxis_title='Volume [%]'
+)
+st.plotly_chart(dvh_fig, use_container_width=True)
