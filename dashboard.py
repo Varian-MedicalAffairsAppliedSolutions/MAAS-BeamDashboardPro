@@ -48,7 +48,7 @@ def extract_data(patient_id, course_id, plan_id):
             for layerIdx, controlPoint in enumerate(eParams.IonControlPointPairs):
                 df = pd.concat([df, pd.DataFrame({
                     'Field ID': beam.Id,
-                    'Energy Layer [MeV]': controlPoint.NominalBeamEnergy,
+                    'Energy Layer [MeV]': f'{controlPoint.NominalBeamEnergy:.2f}',
                     'X [mm]': [s.X for s in controlPoint.FinalSpotList],
                     'Y [mm]': [s.Y for s in controlPoint.FinalSpotList],
                     'MU': [s.Weight * (beamMetersetValue / totMetersetWeight) for s in controlPoint.FinalSpotList],
@@ -166,29 +166,32 @@ st.header('Spot Positions and MUs')
 px.defaults.color_continuous_scale = px.colors.sequential.Burg  #Brwnyl
 
 for fld_name, field_df in df.groupby('Field ID'):
-    for energy_layer_MeV, grp_df in df.groupby('Energy Layer [MeV]'):
+    st.subheader(fld_name)
+    layer_option = st.selectbox('Energy Layer [MeV]:', field_df['Energy Layer [MeV]'].unique(), index=0, key=field_df)
+
+    # for energy_layer_MeV, grp_df in field_df.groupby('Energy Layer [MeV]'):
         # TODO: add PTV contour (beam target)
+    grp_df = field_df[field_df['Energy Layer [MeV]'] == layer_option]
+    fig_scatt = px.scatter(grp_df, x='X [mm]', y='Y [mm]', color='MU', hover_data=['MU'], title=f"{fld_name}: {layer_option} MeV")
+    fig_scatt.add_trace(go.Scatter(
+        x=grp_df['X [mm]'], y=grp_df['Y [mm]'],
+        mode='lines', line_dash='dash', line_color= 'black', name='path'
+    ))
+    fig_scatt.update_traces(marker=dict(size=20), selector=dict(mode='markers'))
+    fig_scatt.update_yaxes(
+        scaleanchor = "x",
+        scaleratio = 1,
+    )
 
-        fig_scatt = px.scatter(grp_df, x='X [mm]', y='Y [mm]', color='MU', hover_data=['MU'], title=f"{fld_name}: {energy_layer_MeV} MeV")
+    for _, dfc_field in dfc[dfc['Beam ID'] == fld_name].groupby('Contour Idx'):
+        structure_id = dfc_field['Structure ID'][0]
         fig_scatt.add_trace(go.Scatter(
-            x=grp_df['X [mm]'], y=grp_df['Y [mm]'],
-            mode='lines', line_dash='dash', line_color= 'black', name='path'
+            x=dfc_field['Points X'], y=dfc_field['Points Y'], mode='lines',
+            name=structure_id
         ))
-        fig_scatt.update_traces(marker=dict(size=20), selector=dict(mode='markers'))
-        fig_scatt.update_yaxes(
-            scaleanchor = "x",
-            scaleratio = 1,
-        )
+        fig_scatt.update_traces(line_color=dfc_field['Color'][0], selector=dict(name='PTV'))
 
-        for _, dfc_field in dfc[dfc['Beam ID'] == fld_name].groupby('Contour Idx'):
-            structure_id = dfc_field['Structure ID'][0]
-            fig_scatt.add_trace(go.Scatter(
-                x=dfc_field['Points X'], y=dfc_field['Points Y'], mode='lines',
-                name=structure_id
-            ))
-            fig_scatt.update_traces(line_color=dfc_field['Color'][0], selector=dict(name='PTV'))
-
-        st.plotly_chart(fig_scatt, use_container_width=True)
+    st.plotly_chart(fig_scatt, use_container_width=True)
 
 ##
 st.header('DVH')
