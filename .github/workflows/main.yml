@@ -1,0 +1,45 @@
+name: BeamDashBoardPro Python Application Build
+
+on:
+  push:
+    branches: [ main ]
+    paths-ignore:
+      - 'README.md'
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.10'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Build with PyInstaller
+      run: |
+        pyinstaller streamlit_runner.spec
+
+    - name: Stage scripts
+      run: |
+        cp DashboardPro.cs "${{ runner.temp }}/DashboardPro.cs"
+        cp dashboard.py "${{ runner.temp }}/dashboard.py"
+
+    - name: Stage build
+      run: |
+        cp -r dist "${{ runner.temp }}/dist"
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: DashboardPro${{ github.run_number }}
+        path: ${{ runner.temp }}
