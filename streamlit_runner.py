@@ -1,7 +1,12 @@
 import streamlit.web.cli as stcli
 import sys
+from datetime import datetime
+from expiration import EXP_DATE
 
 if __name__ == "__main__":
+    if(datetime.today() > EXP_DATE):
+        print("[ERROR] This software has expired.")
+        sys.exit(99)
 
     if len(sys.argv) == 1:
         print('ERROR: please provide path to streamlit script')

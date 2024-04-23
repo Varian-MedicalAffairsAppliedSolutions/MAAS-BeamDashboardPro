@@ -66,6 +66,9 @@ namespace VMS.TPS
                 ArgBuilder("plan-id", context.PlanSetup.Id) +
                 ArgBuilder("course-id", context.PlanSetup.Course.Id) +
                 ArgBuilder("patient-id", context.Patient.Id);
+            
+            // uncomment below if you have read and agree to the Varian-LUSLA
+            // startInfo.Arguments += " --accept-Varian-LUSLA";
 
             // uncomment below to help with debugging
             //MessageBox.Show(exePath + " " + startInfo.Arguments,"Arguments (press ctrl+c to copy to clipboard)");
