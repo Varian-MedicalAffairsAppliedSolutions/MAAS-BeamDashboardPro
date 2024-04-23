@@ -28,18 +28,37 @@ jobs:
     - name: Build with PyInstaller
       run: |
         pyinstaller streamlit_runner.spec
-
-    - name: Stage scripts
-      run: |
-        cp DashboardPro.cs "${{ runner.temp }}/DashboardPro.cs"
-        cp dashboard.py "${{ runner.temp }}/dashboard.py"
-
+        
     - name: Stage build
       run: |
         cp -r dist "${{ runner.temp }}/dist"
+        
+    - name: Stage scripts
+      run: |
+        cp DashboardPro.cs "${{ runner.temp }}/dist/DashboardPro.cs"
+        cp dashboard.py "${{ runner.temp }}/dist/dashboard.py"
 
-    - name: Upload artifact
-      uses: actions/upload-artifact@v2
+    - name: Zip
+      run: |
+        Compress-Archive `
+          -Path "${{ runner.temp }}/dist/*" `
+          -DestinationPath "${{ github.workspace }}/${{env.PROJECT_NAME}}${{ steps.update_assembly_info.outputs.RELEASE_FILE_NAME }}-portablePyESAPI.zip"
+    
+    - name: Create Release
+      uses: softprops/action-gh-release@v0.1.13
       with:
-        name: DashboardPro${{ github.run_number }}
-        path: ${{ runner.temp }}
+        name: ${{env.PROJECT_NAME}}${{ steps.update_assembly_info.outputs.RELEASE_NAME }}-portablePyESAPI
+        tag_name: ${{env.PROJECT_NAME}}${{ steps.update_assembly_info.outputs.RELEASE_NAME }}-portablePyESAPI
+        token: ${{ secrets.GITHUB_TOKEN }}
+        draft: false
+        prerelease: false
+        body: |
+          This is an official release of the **`${{ env.PROJECT_NAME }}`** project.
+          Supported Eclipse version: `v16+`.
+          This software is valid until `${{ github.event.inputs.dateInput }}`.
+        files: ${{ github.workspace }}/${{env.PROJECT_NAME}}${{ steps.update_assembly_info.outputs.RELEASE_FILE_NAME }}-portablePyESAPI.zip
+#    - name: Upload artifact
+#      uses: actions/upload-artifact@v2
+#      with:
+#        name: DashboardPro${{ github.run_number }}
+#        path: ${{ runner.temp }}
