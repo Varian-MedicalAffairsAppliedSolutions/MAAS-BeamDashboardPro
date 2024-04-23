@@ -48,14 +48,14 @@ jobs:
       uses: softprops/action-gh-release@v0.1.13
       with:
         name: ${{env.PROJECT_NAME}}${{ steps.update_assembly_info.outputs.RELEASE_NAME }}-portablePyESAPI
-        tag_name: ${{env.PROJECT_NAME}}${{ steps.update_assembly_info.outputs.RELEASE_NAME }}-portablePyESAPI
+#        tag_name: ${{env.PROJECT_NAME}}${{ steps.update_assembly_info.outputs.RELEASE_NAME }}-portablePyESAPI
         token: ${{ secrets.GITHUB_TOKEN }}
         draft: false
         prerelease: false
         body: |
           This is an official release of the **`${{ env.PROJECT_NAME }}`** project.
           Supported Eclipse version: `v16+`.
-          This software is valid until `${{ github.event.inputs.dateInput }}`.
+          This software is valid until '365 post release'}`.
         files: ${{ github.workspace }}/${{env.PROJECT_NAME}}${{ steps.update_assembly_info.outputs.RELEASE_FILE_NAME }}-portablePyESAPI.zip
 #    - name: Upload artifact
 #      uses: actions/upload-artifact@v2
