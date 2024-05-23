@@ -47,8 +47,8 @@ jobs:
     - name: Create Release
       uses: softprops/action-gh-release@v0.1.13
       with:
-        name: ${{env.PROJECT_NAME}}${{ steps.update_assembly_info.outputs.RELEASE_NAME }}-portablePyESAPI
-#        tag_name: ${{env.PROJECT_NAME}}${{ steps.update_assembly_info.outputs.RELEASE_NAME }}-portablePyESAPI
+        name: ${{env.PROJECT_NAME}}${{ steps.update_assembly_info.outputs.RELEASE_FILE_NAME }}-portablePyESAPI
+        tag_name: ${{  github.ref_name }}
         token: ${{ secrets.GITHUB_TOKEN }}
         draft: false
         prerelease: false
