@@ -32,10 +32,6 @@ jobs:
     - name: Build with PyInstaller
       run: |
         pyinstaller streamlit_runner.spec
-
-    - name: Build with PyInstaller
-      run: |
-        pyinstaller streamlit_runner.spec
         
     - name: Stage build
       run: |
