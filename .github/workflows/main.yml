@@ -6,7 +6,7 @@ on:
       version_tag:
         description: 'Release version (build date/tag name)'
         required: true
-        default: 'v20YY.MM.DD.#'
+        default: 'v20yy.M.D.#'
   # push:
   #   tags:
   #     - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
@@ -17,7 +17,7 @@ on:
   #   branches: [ main ]
 
 env:
-  RELEASE_NAME: ${{ github.event.repository.name }}${{ github.ref_name }}
+  RELEASE_NAME: ${{ github.event.repository.name }}-${{ github.version_tag }}
 
 jobs:
   build:
@@ -56,7 +56,7 @@ jobs:
       run: |
         Compress-Archive `
           -Path "dist/*" `
-          -DestinationPath "${{ env.RELEASE_NAME }}-portablePyESAPI.zip"
+          -DestinationPath "${{ env.RELEASE_NAME }}.zip"
     
     - name: Create Release
       uses: softprops/action-gh-release@v0.1.13
@@ -67,12 +67,13 @@ jobs:
         draft: true
         prerelease: false
         body: |
-          This is an official `${{  github.version_tag }}` release of the **`${{ github.event.repository.name }}`** project.
+          This is the official release of **`${{ github.event.repository.name }}`** `${{ github.version_tag }}`.
+          The .zip file contains a portable "compiled" python executable created with PyInstaller along with an ESAPI single file script launcher (.cs).
           For use on Eclipse versions 16 and up.
           This software is valid until 365 post release.
-        files: ${{ env.RELEASE_NAME }}-portablePyESAPI.zip
+        files: ${{ env.RELEASE_NAME }}.zip
 #    - name: Upload artifact
 #      uses: actions/upload-artifact@v2
 #      with:
-#        name: DashboardPro${{  github.ref_name }}
+#        name: DashboardPro${{ github.ref_name }}
 #        path: ${{ runner.temp }}/dist/*
