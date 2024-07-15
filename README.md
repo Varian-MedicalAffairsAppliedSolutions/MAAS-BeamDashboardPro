@@ -1,4 +1,4 @@
-# Dashboard Pro
+# BeamDashboardPro
 This project is a proof of concept, bringing modern interactive plotting tools to the Eclipse research platform. This is done by leveraging PyESAPI and Streamlit to build a bridge between the Eclipse data model and Plotly (or any other python plotting library of your choice).
 
 ## Quickstart
