@@ -1,9 +1,15 @@
-name: BeamDashBoardPro Python Application Build
+name: BeamDashBoardPro Python Application Release
 
 on:
-  push:
-    tags:
-      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+  workflow_dispatch:
+    inputs:
+      version_tag:
+        description: 'Release version (build date/tag name)'
+        required: true
+        default: 'v20YY.MM.DD.#'
+  # push:
+  #   tags:
+  #     - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
   #   branches: [ main ]
   #   paths-ignore:
   #     - 'README.md'
@@ -56,12 +62,12 @@ jobs:
       uses: softprops/action-gh-release@v0.1.13
       with:
         name: ${{ env.RELEASE_NAME }}
-        tag_name: ${{ github.ref_name }}
+        tag_name: ${{ github.event.inputs.tag_ver }}
         token: ${{ secrets.GITHUB_TOKEN }}
         draft: true
         prerelease: false
         body: |
-          This is an official `${{  github.ref_name }}` release of the **`${{ github.event.repository.name }}`** project.
+          This is an official `${{  github.version_tag }}` release of the **`${{ github.event.repository.name }}`** project.
           For use on Eclipse versions 16 and up.
           This software is valid until 365 post release.
         files: ${{ env.RELEASE_NAME }}-portablePyESAPI.zip
