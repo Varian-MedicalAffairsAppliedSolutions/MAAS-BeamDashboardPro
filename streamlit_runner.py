@@ -4,6 +4,9 @@ from datetime import datetime
 from expiration import EXP_DATE
 
 if __name__ == "__main__":
+    print("This software is valid until " + EXP_DATE.isoformat())
+    print("Check here for the latest releases - https://github.com/Varian-MedicalAffairsAppliedSolutions/MAAS-BeamDashboardPro/releases")
+
     if(datetime.today() > EXP_DATE):
         print("[ERROR] This software has expired.")
         sys.exit(99)
