@@ -14,7 +14,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
@@ -46,23 +45,23 @@ jobs:
       run: |
         Compress-Archive `
           -Path "${{ runner.temp }}/dist/*" `
-          -DestinationPath "${{ github.workspace }}/${{env.PROJECT_NAME}}${{ steps.update_assembly_info.outputs.RELEASE_FILE_NAME }}-portablePyESAPI.zip"
+          -DestinationPath "${{ github.workspace }}/${{ github.event.repository.name }}${{ github.ref_name }}-portablePyESAPI.zip"
     
     - name: Create Release
       uses: softprops/action-gh-release@v0.1.13
       with:
         name: ${{env.PROJECT_NAME}}${{ steps.update_assembly_info.outputs.RELEASE_FILE_NAME }}-portablePyESAPI
-        tag_name: ${{  github.ref_name }}
+        tag_name: ${{ github.ref_name }}
         token: ${{ secrets.GITHUB_TOKEN }}
         draft: false
         prerelease: false
         body: |
-          This is an official release of the **`${{ env.PROJECT_NAME }}`** project.
-          Supported Eclipse version: `v16+`.
-          This software is valid until '365 post release'}`.
-        files: ${{ github.workspace }}/${{env.PROJECT_NAME}}${{ steps.update_assembly_info.outputs.RELEASE_FILE_NAME }}-portablePyESAPI.zip
+          This is an official `${{  github.ref_name }}` release of the **`${{ github.event.repository.name }}`** project.
+          Supported Eclipse version: v16+.
+          This software is valid until 365 post release.
+        files: ${{ github.workspace }}/${{ github.event.repository.name }}${{ github.ref_name }}-portablePyESAPI.zip
 #    - name: Upload artifact
 #      uses: actions/upload-artifact@v2
 #      with:
-#        name: DashboardPro${{ github.run_number }}
-#        path: ${{ runner.temp }}
+#        name: DashboardPro${{  github.ref_name }}
+#        path: ${{ runner.temp }}/dist/*
