@@ -17,7 +17,7 @@ on:
   #   branches: [ main ]
 
 env:
-  RELEASE_NAME: ${{ github.event.repository.name }}-${{ github.version_tag }}
+  RELEASE_NAME: ${{ github.event.repository.name }}-${{ github.event.inputs.version_tag }}
 
 jobs:
   build:
@@ -62,12 +62,12 @@ jobs:
       uses: softprops/action-gh-release@v0.1.13
       with:
         name: ${{ env.RELEASE_NAME }}
-        tag_name: ${{ github.event.inputs.tag_ver }}
+        tag_name: ${{ github.event.inputs.version_tag }}
         token: ${{ secrets.GITHUB_TOKEN }}
         draft: true
         prerelease: false
         body: |
-          This is the official release of **`${{ github.event.repository.name }}`** `${{ github.version_tag }}`.
+          This is the official release of **`${{ github.event.repository.name }}`** `${{ github.event.inputs.version_tag }}`.
           The .zip file contains a portable "compiled" python executable created with PyInstaller along with an ESAPI single file script launcher (.cs).
           For use on Eclipse versions 16 and up.
           This software is valid until 365 post release.
