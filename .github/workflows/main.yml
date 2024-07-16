@@ -7,6 +7,10 @@ on:
         description: 'build number (unique for a given day)'
         required: true
         default: '1'
+      draft_bool:
+        description: 'set to "true" to create draft release only'
+        required: true
+        default: 'false'
   # push:
   #   tags:
   #     - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
@@ -68,7 +72,7 @@ jobs:
         name: ${{ env.RELEASE_NAME }}${{ steps.date.outputs.date }}.${{ github.event.inputs.build_num }}
         tag_name: ${{ steps.date.outputs.date }}.${{ github.event.inputs.build_num }}
         token: ${{ secrets.GITHUB_TOKEN }}
-        draft: false
+        draft: ${{ github.event.inputs.draft_bool == "true" }}
         prerelease: false
         body: |
           This is the official release of **`${{ github.event.repository.name }}`** `v${{ steps.date.outputs.date }}.${{ github.event.inputs.build_num }}`.

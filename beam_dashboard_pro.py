@@ -202,6 +202,8 @@ respect to any disputes under or relating to this Agreement.
 supersedes all prior written and oral agreements and understandings relating to same. The Agreement
 may only be modified or amended in a writing signed by the parties that makes specific reference to the
 Agreement and the provision the parties intend to modify or amend.
+
+Note: To auto-collapse this license agreement display, see the ESAPI .cs file.
 """)
 
 plan_title = f'Plan ID: {plan_id}\nPatient ID: {patient_id} | Course ID: {course_id}'
