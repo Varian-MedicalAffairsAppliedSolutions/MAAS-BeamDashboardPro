@@ -72,7 +72,7 @@ jobs:
         name: ${{ env.RELEASE_NAME }}${{ steps.date.outputs.date }}.${{ github.event.inputs.build_num }}
         tag_name: ${{ steps.date.outputs.date }}.${{ github.event.inputs.build_num }}
         token: ${{ secrets.GITHUB_TOKEN }}
-        draft: ${{ github.event.inputs.draft_bool == "true" }}
+        draft: ${{ ${{ github.event.inputs.draft_bool }} == "true" }}
         prerelease: false
         body: |
           This is the official release of **`${{ github.event.repository.name }}`** `v${{ steps.date.outputs.date }}.${{ github.event.inputs.build_num }}`.
