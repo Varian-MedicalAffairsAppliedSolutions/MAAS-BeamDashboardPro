@@ -3,11 +3,10 @@ name: BeamDashBoardPro Python Application Release
 on:
   workflow_dispatch:
     inputs:
-      version_tag:
-        description: 'Release version (build date/tag name)'
+      build_num:
+        description: 'build number (unique for a given day)'
         required: true
-  #     default: 'v20yy.M.D.#'
-        default: ${{date +'%Y.%m.%d'}}'.buildX'
+        default: '1'
   # push:
   #   tags:
   #     - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
@@ -18,13 +17,17 @@ on:
   #   branches: [ main ]
 
 env:
-  RELEASE_NAME: ${{ github.event.repository.name }}-${{ github.event.inputs.version_tag }}
+  RELEASE_NAME: ${{ github.event.repository.name }}-v
 
 jobs:
   build:
     runs-on: windows-latest
 
     steps:
+    - name: Get current date
+      id: date
+      run: echo "::set-output name=date::$(date +'%Y.%m.%d')"
+    
     - uses: actions/checkout@v2
     - name: Set up Python
       uses: actions/setup-python@v2
@@ -57,22 +60,22 @@ jobs:
       run: |
         Compress-Archive `
           -Path "dist/*" `
-          -DestinationPath "${{ env.RELEASE_NAME }}.zip"
+          -DestinationPath "${{ env.RELEASE_NAME }}${{ steps.date.outputs.date }}.${{ github.event.inputs.build_num }}.zip"
     
     - name: Create Release
       uses: softprops/action-gh-release@v0.1.13
       with:
-        name: ${{ env.RELEASE_NAME }}
-        tag_name: ${{ github.event.inputs.version_tag }}
+        name: ${{ env.RELEASE_NAME }}${{ steps.date.outputs.date }}.${{ github.event.inputs.build_num }}
+        tag_name: ${{ steps.date.outputs.date }}.${{ github.event.inputs.build_num }}
         token: ${{ secrets.GITHUB_TOKEN }}
         draft: true
         prerelease: false
         body: |
-          This is the official release of **`${{ github.event.repository.name }}`** `${{ github.event.inputs.version_tag }}`.
+          This is the official release of **`${{ github.event.repository.name }}`** `v${{ steps.date.outputs.date }}.${{ github.event.inputs.build_num }}`.
           The .zip file contains a portable "compiled" python executable created with PyInstaller along with an ESAPI single file script launcher (.cs).
           For use on Eclipse versions 16 and up.
           This software is valid until 365 post release.
-        files: ${{ env.RELEASE_NAME }}.zip
+        files: ${{ env.RELEASE_NAME }}${{ steps.date.outputs.date }}.${{ github.event.inputs.build_num }}.zip
 #    - name: Upload artifact
 #      uses: actions/upload-artifact@v2
 #      with:
