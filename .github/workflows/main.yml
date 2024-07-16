@@ -1,4 +1,4 @@
-mname: BeamDashBoardPro Python Application Release
+name: BeamDashBoardPro Python Application Release
 
 on:
   workflow_dispatch:
