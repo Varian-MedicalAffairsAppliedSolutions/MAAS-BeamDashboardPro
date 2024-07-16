@@ -46,7 +46,7 @@ namespace VMS.TPS
                 runningInProduction = false;
             }
 
-            var scriptPath = Path.Combine(workingDirectory, "dashboard.py");
+            var scriptPath = Path.Combine(workingDirectory, "beam_dashboard_pro.py");
             string exePath;
 
             if(runningInProduction)
