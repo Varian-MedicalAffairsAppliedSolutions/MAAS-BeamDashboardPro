@@ -1,4 +1,4 @@
-name: BeamDashBoardPro Python Application Release
+mname: BeamDashBoardPro Python Application Release
 
 on:
   workflow_dispatch:
@@ -57,8 +57,8 @@ jobs:
         
     - name: Stage scripts
       run: |
-        cp DashboardPro.cs "dist/DashboardPro.cs"
-        cp dashboard.py "dist/dashboard.py"
+        cp BeamDashboardPro.cs "dist/BeamDashboardPro.cs"
+        cp beam_dashboard_pro.py "dist/beam_dashboard_pro.py"
 
     - name: Zip
       run: |
