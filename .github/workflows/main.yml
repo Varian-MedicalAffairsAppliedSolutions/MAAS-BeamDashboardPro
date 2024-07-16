@@ -7,7 +7,7 @@ on:
         description: 'Release version (build date/tag name)'
         required: true
   #     default: 'v20yy.M.D.#'
-        default: $(date +'%Y.%m.%d')'.buildX'
+        default: ${{date +'%Y.%m.%d'}}'.buildX'
   # push:
   #   tags:
   #     - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
