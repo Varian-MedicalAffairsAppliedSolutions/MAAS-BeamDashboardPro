@@ -1,5 +1,5 @@
 # BeamDashboardPro
-This project geenerates a Beam DashBoard for Proton plans in a webrowser as a read-only report with advanced visualizations.  It uses PyESAPI with Plotly running in streamlit via the default webrowser (tested with Chrome and Edge).  This project is availble as a compiled release (coutesy of PyInstaller and GitHub Actions) to be downloaded from the [releases](/releases) section and then the .zip file is to be extacted into the "System Scripts" directory on your Eclipse system (no Python environment needs to be installed there).  The project aims to bring modern interactive plotting tools to the Eclipse platform leveraging PyESAPI and Streamlit to build a bridge between the Eclipse data model and Plotly (or any other python plotting library of your choice).
+This project geenerates a Beam DashBoard for Proton plans in a webrowser as a read-only report with advanced visualizations.  It uses PyESAPI with Plotly running in streamlit via the default webrowser (tested with Chrome and Edge).  This project is availble as a compiled release (coutesy of PyInstaller and GitHub Actions) to be downloaded from the [releases]((https://github.com/Varian-MedicalAffairsAppliedSolutions/MAAS-BeamDashboardPro/releases) section and then the .zip file is to be extacted into the "System Scripts" directory on your Eclipse system (no Python environment needs to be installed there).  The project aims to bring modern interactive plotting tools to the Eclipse platform leveraging PyESAPI and Streamlit to build a bridge between the Eclipse data model and Plotly (or any other python plotting library of your choice).
 
 ## Example report (images are dynamic with mouseover, clickable and interactive)
 
@@ -19,7 +19,7 @@ Launch BeamDashBoardPro.cs from the system scripts directory
 Streamlit runner console will first appear (leave this open)
 ![image](https://github.com/user-attachments/assets/0372c2c5-6fa6-46ef-848d-64005946bc6a)
 
-Then the streamlit runner will launch the system default browser and build+dispaly the BeamDashboardPro interative report
+Then the streamlit runner will launch the system default browser and build+dispaly the BeamDashboardPro interative report <br>
 -close broswer window and streamlit runner console when finished
 
 ## Known Issues
