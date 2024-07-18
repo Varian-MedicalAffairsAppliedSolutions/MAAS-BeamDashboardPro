@@ -78,7 +78,7 @@ jobs:
           This is the official release of **`${{ github.event.repository.name }}`** `v${{ steps.date.outputs.date }}.${{ github.event.inputs.build_num }}`.
           The .zip file contains a portable "compiled" python executable created with PyInstaller along with an ESAPI single file script launcher (.cs).
           For use on Eclipse versions 16 and up.
-          This software is valid until 365 post release.
+          This software is valid for 365 days post release.
         files: ${{ env.RELEASE_NAME }}${{ steps.date.outputs.date }}.${{ github.event.inputs.build_num }}.zip
 #    - name: Upload artifact
 #      uses: actions/upload-artifact@v2
